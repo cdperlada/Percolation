@@ -71,27 +71,25 @@ class Percolation(object):
         return data, label, clustersize
     
     #percolation threshold
-    def thresh(self,n = 50,trials = 10):
+    def thresh(self,N = 50,trials = 10):
         pl = np.arange(0, 1.1, 0.01)
         massl = np.empty_like(pl)
         for w in xrange(0, 100):
             p = pl[w]
             massp = []
             for _ in xrange(trials):
-                print 'p= ', p
                 print 'trial', len(massp)
-                __, __ = self.labelling(n,p)
-                clustersize = self.labelling(n,p)
+                print 'p= ', p
+                __, __, clustersize = self.labelling(N,p)
                 massp.append(clustersize)
             if len(massp) != 0:
-                massl[w] =np.mean(massp)
+                massl[w] = np.mean(massp)
             else:
                 massl[w] = 0
         return pl, massl
     
     def labellingplot(self):
-        data = self.percolation(500,0.59275)
-        label, _ = self.percolation(500,0.59275)
+        data, label, _ = self.labelling(500,0.59275)
         plt.figure()
         plt.imshow(data, cmap = 'gray')
         plt.title('Percolation at p = %s' %(0.59275))
@@ -102,14 +100,14 @@ class Percolation(object):
 #        plt.savefig('LabellingPlot.pdf', dpi = 300, bbox_inches = 'tight')
 
     def Percothreshplot(self):
-        pl = self.thresh(n = 500, trials = 10)
-        massl = self.thresh(n = 500, trials = 10)
+        pl,massl = self.thresh(N = 500, trials = 10)
         pthreshold = pl[massl == np.max(massl)]
         print 'p_c= ', pthreshold #determine critical concentration
-        plt.figure()
-        plt.plot(pl, massl,'--ko', lw = 3, ms = 6)
-        plt.xlabel('$\mathbf{p}$', fontsize = 18) #concentration
-        plt.ylabel('$\mathbf{M}$', fontsize = 18) #cluster mass
+        plt.figure()        
+        plt.plot(pl, massl,'--ro', lw = 3, ms = 6, label = '$p_c=$ %s' %(pthreshold))
+        plt.legend(loc = 0, prop = {'size':15},framealpha = 0.5, fancybox = True)
+        plt.xlabel('Concentration, $\mathbf{p}$', fontsize = 18, family = 'serif', va = 'top')
+        plt.ylabel('Cluster Mass, $\mathbf{M}$', fontsize = 18, family = 'serif', va = 'bottom', rotation = 'vertical')               
 #        plt.savefig('Mvsp.pdf', dpi = 300, bbox_inches = 'tight')    
 
 if __name__ == "__main__":
